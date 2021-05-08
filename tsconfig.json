@@ -21,10 +21,11 @@
       "@components/*": ["./src/components/*"],
       "@components": ["./src/components/index.ts"]
     },
-    "typeRoots": ["src/types/**/*.d.ts", "node_modules/@types"]
+    "typeRoots": ["src/types/*.d.ts", "node_modules/@types"]
   },
   "include": [
     "src",
+      "src/types/*.d.ts",
     "./node_modules/@types"
   ],
   "exclude": ["**/*.js", "node_modules"],
