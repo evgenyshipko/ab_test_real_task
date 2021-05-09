@@ -69,6 +69,13 @@ class Store {
     saveUserDates = async () => {
         if (this.isSavingValid()) {
             await setUserDates(this.data);
+            message.success({
+                content: 'Данные сохранены успешно!',
+                duration: 1,
+                style: {
+                    marginTop: '30px',
+                },
+            });
         } else {
             message.info({
                 content: 'Для сохранения необходимо заполнить даты',
