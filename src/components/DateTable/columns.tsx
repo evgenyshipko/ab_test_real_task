@@ -2,9 +2,8 @@ import {
     actionRenderer,
     getDateRenderer,
 } from '@components/DateTable/renderers';
-import { RowData } from '@src/types/types';
 
-export const getColumns = (tableData: RowData[]) => [
+export const columns = [
     {
         title: 'UserId',
         dataIndex: 'userId',
@@ -14,13 +13,13 @@ export const getColumns = (tableData: RowData[]) => [
         title: 'Date Registration',
         dataIndex: 'registrationDate',
         key: 'registrationDate',
-        render: getDateRenderer(tableData, 'registrationDate'),
+        render: getDateRenderer('registrationDate'),
     },
     {
         title: 'Date Last Activity',
         dataIndex: 'lastActivityDate',
         key: 'lastActivityDate',
-        render: getDateRenderer(tableData, 'lastActivityDate'),
+        render: getDateRenderer('lastActivityDate'),
     },
     {
         dataIndex: 'action',

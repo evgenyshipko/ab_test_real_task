@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
-import { getColumns } from '@components/DateTable/columns';
+import { columns } from '@components/DateTable/columns';
 import { RowData } from '@src/types/types';
 import { StyledTable } from '@components/DateTable/units';
+import { v4 as uuidv4 } from 'uuid';
 
 type DateTableProps = {
     data: RowData[];
@@ -9,8 +10,8 @@ type DateTableProps = {
 
 export const DateTable: FC<DateTableProps> = ({ data }) => (
     <StyledTable
-        columns={getColumns(data)}
-        dataSource={data}
+        columns={columns}
+        dataSource={data.map((row) => ({ ...row, key: uuidv4() }))}
         pagination={false}
     />
 );

@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  postgres:
+    ports:
+      - '${POSTGRES_PORT}:5432'
+    restart: always
+    image: postgres:9.6.5-alpine
+    environment:
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+        - custom
+
+  server-app:
+    build:
+        context: .
+    ports:
+        - "${PORT}:${PORT}"
+        - "${API_PORT}:${API_PORT}"
+    depends_on:
+        - postgres
+    networks:
+        - custom
+    command: npm run production
+
+networks:
+    custom:
+        driver: bridge

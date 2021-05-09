@@ -1,15 +1,17 @@
 import moment from 'moment';
 
-export type RowData = {
+export type RowServiceData = {
     key: string;
+} & RowData;
+
+export type RowData = {
     userId: number;
     registrationDate?: moment.Moment;
     lastActivityDate?: moment.Moment;
-    setColumnValue: (
-        tableData: RowData[],
-        index: number,
-        columnName: string,
-        value: any
-    ) => void;
-    deleteRow: (index: number) => void;
+};
+
+export type RowResponseData = {
+    userId: number;
+    registrationDate?: string;
+    lastActivityDate?: string;
 };
