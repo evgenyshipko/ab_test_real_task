@@ -34,7 +34,7 @@ export const RollingRetentionBlock: FC<Props> = observer(
 
         return (
             <RollingRetentionWrapper>
-                {store.rollingRetention ? (
+                {store.rollingRetention !== undefined ? (
                     <RollingRetentionInfo>
                         Rolling Retention {numOfDays} days:{' '}
                         {store.rollingRetention} %
