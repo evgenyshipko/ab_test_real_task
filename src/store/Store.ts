@@ -1,25 +1,13 @@
 import { makeAutoObservable } from 'mobx';
-import { RowData } from '@src/types/types';
+import { ChartDataType, RowData } from '@src/types/types';
 import {
     deleteUserDatesFromDb,
+    getChartData,
     getRollingRetention,
     getUserDatesFromDb,
-    setUserDates,
+    saveUserDatesInDB,
 } from '@src/pages/MainPage/services';
-import { message } from 'antd';
-import moment from 'moment';
-
-type ChartDataType = (number | string)[][];
-
-const getMomentDifferenceInDays = (
-    moment1: moment.Moment,
-    moment2: moment.Moment
-) => {
-    return Math.floor(
-        Math.abs(moment1.toDate().getTime() - moment2.toDate().getTime()) /
-            (1000 * 24 * 60 * 60)
-    );
-};
+import { showInfoMessage, showSuccessMessage } from '@src/utils';
 
 class Store {
     data: RowData[] = [];
@@ -32,14 +20,16 @@ class Store {
         makeAutoObservable(this);
     }
 
-    clearTableData = () => {
+    clearAllData = async () => {
         this.data = [];
 
         this.rollingRetention = undefined;
 
         this.chartData = [];
 
-        deleteUserDatesFromDb();
+        await deleteUserDatesFromDb();
+
+        showSuccessMessage('Данные удалены успешно!');
     };
 
     setColumnValue = (index: number, columnName: string, value: any) => {
@@ -51,12 +41,9 @@ class Store {
         });
     };
 
-    generateRowData = (): RowData => {
-        const userId = this.data[this.data.length - 1]?.userId;
-        return {
-            userId: userId ? userId + 1 : 1,
-        };
-    };
+    private generateRowData = (userId: number): RowData => ({
+        userId,
+    });
 
     private isSavingValid = () =>
         this.data.every(
@@ -64,64 +51,44 @@ class Store {
                 value.userId && value.registrationDate && value.lastActivityDate
         );
 
-    saveUserDates = async () => {
+    saveTableData = async () => {
         if (this.isSavingValid()) {
-            await setUserDates(this.data);
-            message.success({
-                content: 'Данные сохранены успешно!',
-                duration: 1,
-                style: {
-                    marginTop: '30px',
-                },
-            });
+            await saveUserDatesInDB(this.data);
+            showSuccessMessage('Данные сохранены успешно!');
         } else {
-            message.info({
-                content: 'Для сохранения необходимо заполнить даты',
-                duration: 1,
-                style: {
-                    marginTop: '30px',
-                },
-            });
+            showInfoMessage('Для сохранения необходимо заполнить даты');
         }
     };
 
-    getInitialData = async () => {
+    getTableData = async () => {
         const result = await getUserDatesFromDb();
         if (result) {
             this.data = result;
         }
     };
 
-    updateData = async () => {
+    updateDataByEmptyRows = async () => {
         if (this.data.length < 5) {
             const newEmptyRows = [];
+
+            let userId = this.data[this.data.length - 1]?.userId;
+            if (!userId) {
+                userId = 0;
+            }
+
             for (let i = 0; i < 5 - this.data.length; i++) {
-                newEmptyRows.push(this.generateRowData());
+                userId++;
+                newEmptyRows.push(this.generateRowData(userId));
             }
             this.data = [...this.data, ...newEmptyRows];
         }
     };
 
-    calculateChartData = () => {
-        const chartDataMap = this.data.reduce((acc, row) => {
-            if (row.registrationDate && row.lastActivityDate) {
-                const days = getMomentDifferenceInDays(
-                    row.registrationDate,
-                    row.lastActivityDate
-                );
-                const currentValue = acc[days.toString()] as number;
-                acc[days.toString()] = currentValue ? currentValue + 1 : 1;
-            }
-            return acc;
-        }, {} as Record<string, number>);
-
-        this.chartData = Object.keys(chartDataMap).reduce((acc, key) => {
-            acc.push([key, chartDataMap[key]]);
-            return acc;
-        }, [] as ChartDataType);
+    updateChartData = async () => {
+        this.chartData = await getChartData();
     };
 
-    calculateRollingRetention = async (numOfDays: number) => {
+    updateRollingRetention = async (numOfDays: number) => {
         this.rollingRetention = await getRollingRetention(numOfDays);
     };
 }

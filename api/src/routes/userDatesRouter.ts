@@ -9,6 +9,7 @@ export const userDatesRouter = (router: Router) => {
         '/rollingRetention/:days',
         UserDatesController.calculateRollingRetention
     );
+    userDatesRouter.get('/chartData', UserDatesController.getChartData);
     userDatesRouter.post('/', UserDatesController.setAll);
     userDatesRouter.delete('/', UserDatesController.deleteAll);
 

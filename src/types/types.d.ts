@@ -15,3 +15,5 @@ export type RowResponseData = {
     registrationDate?: string;
     lastActivityDate?: string;
 };
+
+export type ChartDataType = (number | string)[][];

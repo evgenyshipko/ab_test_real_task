@@ -21,11 +21,11 @@ const numOfDays = 7;
 
 const MainPage: FC<MainPageProps> = observer(({ store }) => {
     useEffect(() => {
-        store.getInitialData();
+        store.getTableData();
     }, []);
 
     useEffect(() => {
-        store.updateData();
+        store.updateDataByEmptyRows();
     }, [store.data]);
 
     return (
@@ -34,18 +34,18 @@ const MainPage: FC<MainPageProps> = observer(({ store }) => {
                 <ButtonBlock>
                     <StyledButton
                         children={'Save'}
-                        onClick={() => store.saveUserDates()}
+                        onClick={() => store.saveTableData()}
                     />
                     <StyledButton
                         children={'Calculate'}
                         onClick={async () => {
-                            await store.calculateRollingRetention(numOfDays);
-                            store.calculateChartData();
+                            await store.updateRollingRetention(numOfDays);
+                            store.updateChartData();
                         }}
                     />
                     <StyledButton
                         children={'Clear'}
-                        onClick={() => store.clearTableData()}
+                        onClick={() => store.clearAllData()}
                     />
                 </ButtonBlock>
 

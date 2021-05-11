@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 import { UserDates } from '../models/UserDates.model';
 import { RowData } from '../../../src/types/types';
 import { sequelize } from '../db';
+import { getDateDifferenceInDays } from '../utils';
+
+type ChartDataType = (number | string)[][];
 
 export default class UserDatesController {
     public static async getAll(request: Request, response: Response) {
@@ -85,6 +88,33 @@ export default class UserDatesController {
                     : (returnedQuantity / installedQuantity) * 100;
 
             return response.json(rollingRetention);
+        } catch (error) {
+            response.status(500).json(error);
+        }
+    }
+
+    public static async getChartData(request: Request, response: Response) {
+        try {
+            const rows = await UserDates.findAll();
+
+            const chartDataMap = rows.reduce((acc, row) => {
+                if (row.registrationDate && row.lastActivityDate) {
+                    const days = getDateDifferenceInDays(
+                        row.registrationDate,
+                        row.lastActivityDate
+                    );
+                    const currentValue = acc[days.toString()] as number;
+                    acc[days.toString()] = currentValue ? currentValue + 1 : 1;
+                }
+                return acc;
+            }, {} as Record<string, number>);
+
+            const chartData = Object.keys(chartDataMap).reduce((acc, key) => {
+                acc.push([key, chartDataMap[key]]);
+                return acc;
+            }, [] as ChartDataType);
+
+            return response.json(chartData);
         } catch (error) {
             response.status(500).json(error);
         }

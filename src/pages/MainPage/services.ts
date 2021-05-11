@@ -1,10 +1,10 @@
-import { RowData, RowResponseData } from '@src/types/types';
+import { ChartDataType, RowData, RowResponseData } from '@src/types/types';
 import moment from 'moment';
-import { message } from 'antd';
+import { showWarnMessage } from '@src/utils';
 
 const API_LINK = `${process.env.HOST}:${process.env.API_PORT}/api/userDates`;
 
-export const setUserDates = (rowList: RowData[]) => {
+export const saveUserDatesInDB = (rowList: RowData[]) => {
     return fetch(API_LINK, {
         method: 'POST',
         body: JSON.stringify(rowList),
@@ -14,7 +14,7 @@ export const setUserDates = (rowList: RowData[]) => {
     })
         .then((res) => res.json())
         .catch((error) => {
-            message.warning('Произошла ошибка!');
+            showWarnMessage('Ошибка сервера');
             console.log(error);
         });
 };
@@ -30,7 +30,7 @@ export const getUserDatesFromDb = (): Promise<RowData[] | void> => {
             }))
         )
         .catch((error) => {
-            message.warning('Произошла ошибка!');
+            showWarnMessage('Невозможно получить данные пользователей из базы');
             console.log(error);
         });
 };
@@ -44,7 +44,7 @@ export const deleteUserDatesFromDb = () => {
     })
         .then((res) => res.json())
         .catch((error) => {
-            message.warning('Произошла ошибка!');
+            showWarnMessage('Ошибка сервера');
             console.log(error);
         });
 };
@@ -53,7 +53,16 @@ export const getRollingRetention = (numOfDays: number): Promise<number> => {
     return fetch(`${API_LINK}/rollingRetention/${numOfDays}`)
         .then((res) => res.json())
         .catch((error) => {
-            message.warning('Произошла ошибка!');
+            showWarnMessage('Ошибка при расчете rolling retention');
+            console.log(error);
+        });
+};
+
+export const getChartData = (): Promise<ChartDataType> => {
+    return fetch(`${API_LINK}/chartData`)
+        .then((res) => res.json())
+        .catch((error) => {
+            showWarnMessage('Ошибка при расчете данных гистограммы');
             console.log(error);
         });
 };

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import { connectToDb } from './db';
 import { apiRouter } from './routes';
+import { IS_DEV } from './env';
 
 dotenv.config();
 
@@ -11,11 +12,11 @@ connectToDb();
 
 const app = express();
 
-const HOST = process.env.HOST;
+const HOST = IS_DEV ? 'http://localhost' : process.env.HOST;
 const PORT = process.env.PORT;
 
 app.use(express.json())
-    .use(cors({ origin: [`${HOST}:${PORT}`, `http://37.193.142.197`] }))
+    .use(cors({ origin: [`${HOST}:${PORT}`, HOST] }))
     .use('/api', apiRouter)
     .listen(process.env.API_PORT, () => {
         console.log(
