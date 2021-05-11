@@ -9,7 +9,7 @@ import {
     TableBlock,
     Wrapper,
 } from '@src/pages/MainPage/units';
-import { StyledButton } from '@src/components/Button';
+import { Button } from '@src/components/Button';
 import Store from '@src/store/Store';
 import { observer } from 'mobx-react';
 
@@ -32,18 +32,18 @@ const MainPage: FC<MainPageProps> = observer(({ store }) => {
         <Wrapper>
             <Paper>
                 <ButtonBlock>
-                    <StyledButton
+                    <Button
                         children={'Save'}
                         onClick={() => store.saveTableData()}
                     />
-                    <StyledButton
+                    <Button
                         children={'Calculate'}
                         onClick={async () => {
                             await store.updateRollingRetention(numOfDays);
                             store.updateChartData();
                         }}
                     />
-                    <StyledButton
+                    <Button
                         children={'Clear'}
                         onClick={() => store.clearAllData()}
                     />

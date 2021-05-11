@@ -89,7 +89,9 @@ class Store {
     };
 
     updateRollingRetention = async (numOfDays: number) => {
-        this.rollingRetention = await getRollingRetention(numOfDays);
+        const rollingRetention = await getRollingRetention(numOfDays);
+
+        this.rollingRetention = Math.round(rollingRetention * 100) / 100;
     };
 }
 
