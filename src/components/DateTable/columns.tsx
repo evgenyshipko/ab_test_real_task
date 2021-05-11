@@ -1,7 +1,4 @@
-import {
-    actionRenderer,
-    getDateRenderer,
-} from '@components/DateTable/renderers';
+import { getDateRenderer } from '@components/DateTable/renderers';
 
 export const columns = [
     {
@@ -20,10 +17,5 @@ export const columns = [
         dataIndex: 'lastActivityDate',
         key: 'lastActivityDate',
         render: getDateRenderer('lastActivityDate'),
-    },
-    {
-        dataIndex: 'action',
-        key: 'action',
-        render: actionRenderer,
     },
 ];

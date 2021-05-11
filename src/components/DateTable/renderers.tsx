@@ -1,18 +1,9 @@
-import { RowData, RowServiceData } from '@src/types/types';
+import { RowServiceData } from '@src/types/types';
 import { DatePicker } from 'antd';
 import React from 'react';
 import moment from 'moment';
-import trash from '@src/assets/icons/trash.svg';
-import { TrashButton } from './units';
 
-import store from '../../store/Store';
-
-export const actionRenderer = (text: any, row: RowData, index: number) => (
-    <TrashButton
-        onClick={() => store.deleteRow(index)}
-        icon={<img src={trash} />}
-    />
-);
+import store from '@src/store/Store';
 
 export const getDateRenderer = (columnName: string) => (
     date: moment.Moment | undefined,

@@ -36,5 +36,5 @@ export const ButtonBlock = styled.div`
     flex-direction: row;
 
     height: 50px;
-    width: 100%;
+    width: 70%;
 `;

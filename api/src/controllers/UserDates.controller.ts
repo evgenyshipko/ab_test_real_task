@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UserDates } from '../models/UserDates.model';
 import { RowData } from '../../../src/types/types';
+import { sequelize } from '../db';
 
 export default class UserDatesController {
     public static async getAll(request: Request, response: Response) {
@@ -30,22 +31,62 @@ export default class UserDatesController {
         }
     }
 
-    public static async deleteByUserId(request: Request, response: Response) {
+    public static async deleteAll(request: Request, response: Response) {
         try {
-            const { userId } = request.params;
-
-            const userDate = await UserDates.findOne({
-                where: {
-                    userId,
-                },
+            await UserDates.destroy({
+                truncate: true,
             });
-            if (userDate) {
-                await userDate.destroy();
-            }
 
             return response.json('true');
         } catch (err) {
             response.status(500).json(err);
+        }
+    }
+
+    private static async getReturnedQuantity(days: number) {
+        const result = await sequelize.query(
+            `SELECT COUNT(id) FROM user_dates WHERE "lastActivityDate" >= "registrationDate" + interval '${days}' day`,
+            {
+                model: UserDates,
+                mapToModel: true,
+            }
+        );
+        return result[0].getDataValue('count');
+    }
+
+    private static async getInstalledQuantity(days: number) {
+        const result = await sequelize.query(
+            `SELECT COUNT(id) FROM user_dates WHERE "registrationDate" <= NOW() - interval '${days}' day`,
+            {
+                model: UserDates,
+                mapToModel: true,
+            }
+        );
+        return result[0].getDataValue('count');
+    }
+
+    public static async calculateRollingRetention(
+        request: Request,
+        response: Response
+    ) {
+        try {
+            const { days } = request.params;
+
+            const returnedQuantity = await UserDatesController.getReturnedQuantity(
+                Number(days)
+            );
+            const installedQuantity = await UserDatesController.getInstalledQuantity(
+                Number(days)
+            );
+
+            const rollingRetention =
+                installedQuantity === 0
+                    ? 0
+                    : (returnedQuantity / installedQuantity) * 100;
+
+            return response.json(rollingRetention);
+        } catch (error) {
+            response.status(500).json(error);
         }
     }
 }

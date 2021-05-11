@@ -7,7 +7,7 @@ export const RollingRetentionWrapper = styled.div`
     flex-direction: column;
 
     width: 100%;
-    height: 400px;
+    height: 300px;
 `;
 
 export const RollingRetentionInfo = styled.div`

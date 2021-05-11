@@ -1,7 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 import { RowData } from '@src/types/types';
 import {
-    deleteUserDateFromDb,
+    deleteUserDatesFromDb,
+    getRollingRetention,
     getUserDatesFromDb,
     setUserDates,
 } from '@src/pages/MainPage/services';
@@ -31,6 +32,16 @@ class Store {
         makeAutoObservable(this);
     }
 
+    clearTableData = () => {
+        this.data = [];
+
+        this.rollingRetention = undefined;
+
+        this.chartData = [];
+
+        deleteUserDatesFromDb();
+    };
+
     setColumnValue = (index: number, columnName: string, value: any) => {
         this.data = this.data.map((row, innerIndex) => {
             if (index === innerIndex) {
@@ -40,24 +51,11 @@ class Store {
         });
     };
 
-    deleteRow = async (index: number) => {
-        const userId = this.data[index]?.userId;
-        this.data = this.data.filter(
-            (value, innerIndex) => innerIndex !== index
-        );
-        if (userId) {
-            await deleteUserDateFromDb(userId);
-        }
-    };
-
-    addRow = () => {
+    generateRowData = (): RowData => {
         const userId = this.data[this.data.length - 1]?.userId;
-
-        const newElement: RowData = {
+        return {
             userId: userId ? userId + 1 : 1,
         };
-
-        this.data = [...this.data, newElement];
     };
 
     private isSavingValid = () =>
@@ -87,48 +85,44 @@ class Store {
         }
     };
 
+    getInitialData = async () => {
+        const result = await getUserDatesFromDb();
+        if (result) {
+            this.data = result;
+        }
+    };
+
     updateData = async () => {
-        this.data = await getUserDatesFromDb();
+        if (this.data.length < 5) {
+            const newEmptyRows = [];
+            for (let i = 0; i < 5 - this.data.length; i++) {
+                newEmptyRows.push(this.generateRowData());
+            }
+            this.data = [...this.data, ...newEmptyRows];
+        }
     };
 
     calculateChartData = () => {
-        this.chartData = this.data.reduce((acc, row) => {
+        const chartDataMap = this.data.reduce((acc, row) => {
             if (row.registrationDate && row.lastActivityDate) {
-                acc.push([
-                    row.userId.toString(),
-                    getMomentDifferenceInDays(
-                        row.registrationDate,
-                        row.lastActivityDate
-                    ),
-                ]);
+                const days = getMomentDifferenceInDays(
+                    row.registrationDate,
+                    row.lastActivityDate
+                );
+                const currentValue = acc[days.toString()] as number;
+                acc[days.toString()] = currentValue ? currentValue + 1 : 1;
             }
+            return acc;
+        }, {} as Record<string, number>);
+
+        this.chartData = Object.keys(chartDataMap).reduce((acc, key) => {
+            acc.push([key, chartDataMap[key]]);
             return acc;
         }, [] as ChartDataType);
     };
 
-    calculateRollingRetention = (numOfDays: number) => {
-        let backUsers = 0;
-        let installs = 0;
-
-        this.data.forEach((row) => {
-            if (row.lastActivityDate && row.registrationDate) {
-                if (
-                    getMomentDifferenceInDays(
-                        row.lastActivityDate,
-                        row.registrationDate
-                    ) >= numOfDays
-                ) {
-                    backUsers++;
-                }
-                if (
-                    getMomentDifferenceInDays(moment(), row.registrationDate) <=
-                    numOfDays
-                ) {
-                    installs++;
-                }
-            }
-        });
-        this.rollingRetention = Math.round((backUsers / installs) * 100);
+    calculateRollingRetention = async (numOfDays: number) => {
+        this.rollingRetention = await getRollingRetention(numOfDays);
     };
 }
 

@@ -4,7 +4,6 @@ import {
     RollingRetentionInfo,
     RollingRetentionWrapper,
 } from '@components/RollingRetentionBlock/units';
-import { StyledButton } from '@components/Button';
 import Store from '@src/store/Store';
 import { observer } from 'mobx-react';
 
@@ -20,14 +19,14 @@ export const RollingRetentionBlock: FC<Props> = observer(
                 chartType="ColumnChart"
                 width={'500px'}
                 height={'300px'}
-                data={[['UserId', 'Days'], ...store.chartData]}
+                data={[['Days', 'User quantity'], ...store.chartData]}
                 options={{
                     title: 'User lifetime',
                     hAxis: {
-                        title: 'UserId',
+                        title: 'Lifetime, days',
                     },
                     vAxis: {
-                        title: 'Lifetime, days',
+                        title: 'User quantity',
                     },
                 }}
             />
@@ -35,14 +34,6 @@ export const RollingRetentionBlock: FC<Props> = observer(
 
         return (
             <RollingRetentionWrapper>
-                <StyledButton
-                    onClick={() => {
-                        store.calculateRollingRetention(numOfDays);
-                        store.calculateChartData();
-                    }}
-                >
-                    Calculate
-                </StyledButton>
                 {store.rollingRetention ? (
                     <RollingRetentionInfo>
                         Rolling Retention {numOfDays} days:{' '}

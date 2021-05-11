@@ -5,8 +5,12 @@ export const userDatesRouter = (router: Router) => {
     const userDatesRouter = Router();
 
     userDatesRouter.get('/', UserDatesController.getAll);
+    userDatesRouter.get(
+        '/rollingRetention/:days',
+        UserDatesController.calculateRollingRetention
+    );
     userDatesRouter.post('/', UserDatesController.setAll);
-    userDatesRouter.delete('/:userId', UserDatesController.deleteByUserId);
+    userDatesRouter.delete('/', UserDatesController.deleteAll);
 
     router.use('/userDates', userDatesRouter);
 };

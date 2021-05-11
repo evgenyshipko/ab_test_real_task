@@ -17,23 +17,35 @@ type MainPageProps = {
     store: typeof Store;
 };
 
+const numOfDays = 7;
+
 const MainPage: FC<MainPageProps> = observer(({ store }) => {
     useEffect(() => {
-        store.updateData();
+        store.getInitialData();
     }, []);
+
+    useEffect(() => {
+        store.updateData();
+    }, [store.data]);
 
     return (
         <Wrapper>
             <Paper>
                 <ButtonBlock>
                     <StyledButton
-                        onClick={() => store.addRow()}
-                        disabled={store.data.length >= 5}
-                        children={'Create'}
-                    />
-                    <StyledButton
                         children={'Save'}
                         onClick={() => store.saveUserDates()}
+                    />
+                    <StyledButton
+                        children={'Calculate'}
+                        onClick={async () => {
+                            await store.calculateRollingRetention(numOfDays);
+                            store.calculateChartData();
+                        }}
+                    />
+                    <StyledButton
+                        children={'Clear'}
+                        onClick={() => store.clearTableData()}
                     />
                 </ButtonBlock>
 
@@ -41,7 +53,7 @@ const MainPage: FC<MainPageProps> = observer(({ store }) => {
                     <DateTable data={store.data} />
                 </TableBlock>
 
-                <RollingRetentionBlock store={store} numOfDays={7} />
+                <RollingRetentionBlock store={store} numOfDays={numOfDays} />
             </Paper>
         </Wrapper>
     );
