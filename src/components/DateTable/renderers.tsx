@@ -1,9 +1,11 @@
-import { RowServiceData } from '@src/types/types';
-import { DatePicker } from 'antd';
 import React from 'react';
 import moment from 'moment';
 
+import { DatePicker } from 'antd';
+
 import store from '@src/store/Store';
+
+import { RowServiceData } from '@src/types/types';
 
 export const getDateRenderer = (columnName: string) => (
     date: moment.Moment | undefined,

@@ -1,8 +1,10 @@
 import React, { FC } from 'react';
-import { columns } from '@components/DateTable/columns';
-import { RowData } from '@src/types/types';
-import { StyledTable } from '@components/DateTable/units';
 import { v4 as uuidv4 } from 'uuid';
+
+import { columns } from '@components/DateTable/columns';
+import { StyledTable } from '@components/DateTable/units';
+
+import { RowData } from '@src/types/types';
 
 type DateTableProps = {
     data: RowData[];

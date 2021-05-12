@@ -1,7 +1,9 @@
 import React, { FC, useEffect } from 'react';
+import { observer } from 'mobx-react';
 
-import 'antd/dist/antd.css';
+import { Button } from '@components/Button';
 import { DateTable } from '@components/DateTable';
+
 import { RollingRetentionBlock } from '@components/RollingRetentionBlock';
 import {
     ButtonBlock,
@@ -9,9 +11,7 @@ import {
     TableBlock,
     Wrapper,
 } from '@src/pages/MainPage/units';
-import { Button } from '@src/components/Button';
 import Store from '@src/store/Store';
-import { observer } from 'mobx-react';
 
 type MainPageProps = {
     store: typeof Store;

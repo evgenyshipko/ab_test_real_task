@@ -1,5 +1,4 @@
 import { makeAutoObservable } from 'mobx';
-import { ChartDataType, RowData } from '@src/types/types';
 import {
     deleteUserDatesFromDb,
     getChartData,
@@ -8,6 +7,8 @@ import {
     saveUserDatesInDB,
 } from '@src/pages/MainPage/services';
 import { showInfoMessage, showSuccessMessage } from '@src/utils';
+
+import { ChartDataType, RowData } from '@src/types/types';
 
 class Store {
     data: RowData[] = [];

@@ -1,7 +1,9 @@
+import { FC } from 'react';
 import styled from 'styled-components';
+
 import { Table } from 'antd';
 import { TableProps } from 'antd/lib/table/Table';
-import { FC } from 'react';
+
 import { RowServiceData } from '@src/types/types';
 
 export const StyledTable = styled(Table)`

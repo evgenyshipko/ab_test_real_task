@@ -2,7 +2,6 @@ import {
     AllowNull,
     AutoIncrement,
     Column,
-    CreatedAt,
     DataType,
     Model,
     PrimaryKey,
@@ -12,6 +11,7 @@ import {
 @Table({
     tableName: 'user_dates',
     updatedAt: false,
+    createdAt: false,
 })
 export class UserDates extends Model {
     @AutoIncrement
@@ -24,12 +24,10 @@ export class UserDates extends Model {
     userId: number;
 
     @AllowNull(false)
-    @CreatedAt
     @Column(DataType.DATE)
     registrationDate: Date;
 
     @AllowNull(false)
-    @CreatedAt
     @Column(DataType.DATE)
     lastActivityDate: Date;
 }

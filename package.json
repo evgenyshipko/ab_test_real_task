@@ -12,10 +12,6 @@
     "start:api": "ts-node --project api/tsconfig.json api/src/index.ts",
     "build": "cross-env NODE_ENV=production webpack --config webpack/webpack.prod.js"
   },
-  "engines": {
-     "npm": "6.14.9",
-     "node": "14.15.3"
-  },
   "author": "evgenyshipko",
   "license": "ISC",
   "devDependencies": {
@@ -49,7 +45,6 @@
     "webpack-dev-server": "3.11.2"
   },
   "dependencies": {
-    "@ant-design/icons": "4.6.2",
     "antd": "4.15.4",
     "cors": "2.8.5",
     "dotenv": "9.0.0",

@@ -1,11 +1,12 @@
 import React, { FC } from 'react';
+import { observer } from 'mobx-react';
+
 import { Chart } from 'react-google-charts';
 import {
     RollingRetentionInfo,
     RollingRetentionWrapper,
 } from '@components/RollingRetentionBlock/units';
 import Store from '@src/store/Store';
-import { observer } from 'mobx-react';
 
 type Props = {
     numOfDays: number;
