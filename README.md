@@ -1,10 +1,10 @@
 ###  A/B TEST REAL TEST TASK
 
-**Task**
+#### Task
 Calculate rolling retention 7 day and build user lifetime histogram
 for data in specified table.
 
-**Get started**
+#### Get started
 - Create .env file in project directory and write the following into
 it (asterisks is your DB settings):
 
@@ -21,3 +21,12 @@ POSTGRES_PORT=***
 
 - run `docker-compose build` in project directory
 - run `docker-compose up` in project directory
+
+#### Stack:
+- React + Typescript
+- mobx
+- styled components
+- express
+- postgres + sequelize
+- docker
+- webpack
